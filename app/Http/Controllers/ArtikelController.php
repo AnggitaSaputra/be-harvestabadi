@@ -20,6 +20,7 @@ class ArtikelController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'author' => 'required|integer',
             'slug' => 'required|string',
             'content' => 'required|string',
@@ -50,6 +51,7 @@ class ArtikelController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'author' => 'required|integer',
             'slug' => 'required|string',
             'content' => 'required|string',

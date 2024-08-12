@@ -10,7 +10,8 @@ class Artikel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 
+        'title',
+        'image', 
         'author', 
         'slug', 
         'content', 
