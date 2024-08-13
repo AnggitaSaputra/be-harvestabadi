@@ -85,4 +85,40 @@ class ArtikelController extends Controller
 
         return new ArtikelResource(true, 'Data Artikel Berhasil Dihapus!', null);
     }
+
+    public function getAllArtikel()
+    {
+        $artikels = Artikel::all();
+        return new ArtikelResource(true, 'List Data Artikels', $artikels);
+    }
+
+    public function getArtikelBySlug($slug)
+    {
+        $artikel = Artikel::where('slug', $slug)->first();
+        
+        if (!$artikel) {
+            return new ArtikelResource(false, 'Artikel not found!', null);
+        }
+
+        return new ArtikelResource(true, 'Detail Data Artikel!', $artikel);
+    }
+
+    public function getArtikelByCategory($category)
+    {
+        $artikels = Artikel::where('category', $category)->get();
+        return new ArtikelResource(true, 'List Data Artikels by Category', $artikels);
+    }
+
+    public function getArtikelByQuery($query)
+    {
+        $artikels = Artikel::where('title', 'LIKE', "%{$query}%")->get();
+        return new ArtikelResource(true, 'List Data Artikels by Query', $artikels);
+    }
+
+    public function getArtikelByYear($year)
+    {
+        $artikels = Artikel::whereYear('created_at', $year)->get();
+        return new ArtikelResource(true, 'List Data Artikels by Year', $artikels);
+    }
+
 }

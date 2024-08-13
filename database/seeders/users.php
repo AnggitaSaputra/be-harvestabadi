@@ -19,5 +19,6 @@ class users extends Seeder
             'email' => 'test@test',
             'password' => Hash::make('123'),
         ]);
+        
     }
 }
