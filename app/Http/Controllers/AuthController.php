@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AuthResource;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -43,7 +41,6 @@ class AuthController extends Controller
 
         if ($user && Auth::attempt($credentials, $remember)) {
             $token = $user->createToken($request->email)->plainTextToken;
-            $tokenInstance = PersonalAccessToken::findToken($token);
             $data = [
                 'token' => $token,
                 'name' => $user->name, // Menggunakan nama user
