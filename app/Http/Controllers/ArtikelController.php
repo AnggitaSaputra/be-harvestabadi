@@ -27,11 +27,22 @@ class ArtikelController extends Controller
             'category' => 'required|integer|exists:categories,id',
         ]);
 
+        $image = $request->file('image');
+        $image->storeAs('public/images', $image->hashName());
+
+
         if ($validator->fails()) {
             return new ArtikelResource(false, 'Validation Error', $validator->errors());
         }
 
-        $artikel = Artikel::create($request->all());
+        $artikel = Artikel::create([
+            'title' => $request->title,
+            'image' => $image->hashName(),
+            'author' => $request->author,
+            'slug' => $request->slug,
+            'content' => $request->content,
+            'category' => $request->category,
+        ]);
 
         return new ArtikelResource(true, 'Data Artikel Berhasil Ditambahkan!', $artikel);
     }

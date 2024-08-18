@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AuthResource;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -31,19 +32,18 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
-            'remember' => 'boolean',
+            'remember' => 'boolean',    
         ]);
 
-        $credentials = $request->only('email', 'password');
-        $remember = $request->filled('remember');
+        // Mencari user berdasarkan email
+        $user = User::where('email', $request->email)->first();
 
-        $user = User::where('email', $credentials['email'])->first();
-
-        if ($user && Auth::attempt($credentials, $remember)) {
-            $token = $user->createToken($request->email)->plainTextToken;
+        // Memeriksa apakah user ada dan password cocok
+        if ($user && Hash::check($request->password, $user->password)) {
+            $token = $user->createToken('authToken')->plainTextToken;
             $data = [
                 'token' => $token,
-                'name' => $user->name, // Menggunakan nama user
+                'name' => $user->name,
             ];
             return new AuthResource(true, 'Login successful.', $data);
         }
@@ -51,12 +51,13 @@ class AuthController extends Controller
         return new AuthResource(false, 'Invalid credentials.', null);
     }
 
+
     // Method untuk logout
     public function logout(Request $request)
     {
         $authHeader = $request->header('Authorization');
         $token = str_replace('Bearer ', '', $authHeader);
-        $tokenInstance = PersonalAccessToken::findToken($token);
+        $tokenInstance = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
 
         if ($tokenInstance) {
             $tokenInstance->delete();
@@ -64,7 +65,8 @@ class AuthController extends Controller
         } else {
             return new AuthResource(false, 'Token tidak ditemukan.', null);
         }
-    }
+    }   
+
     public function verifyToken(Request $request)
     {
         $authHeader = $request->header('Authorization');
