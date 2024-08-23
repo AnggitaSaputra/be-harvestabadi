@@ -18,7 +18,7 @@ class AboutController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'deskripsi' => 'required|string',
+            'deskripsi' => 'string',
         ]);
 
         if ($validator->fails()) {

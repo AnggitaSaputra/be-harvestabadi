@@ -30,7 +30,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::find($id);
-        
+
         if (!$category) {
             return new CategoryResource(false, 'Kategori tidak ditemukan!', null);
         }
@@ -41,7 +41,7 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -72,4 +72,3 @@ class CategoryController extends Controller
         return new CategoryResource(true, 'Data Kategori Berhasil Dihapus!', null);
     }
 }
-

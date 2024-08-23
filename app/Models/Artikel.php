@@ -9,14 +9,7 @@ class Artikel extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'image', 
-        'author', 
-        'slug', 
-        'content', 
-        'category'
-    ];
+    protected $guarded = [];
 
     public function author()
     {

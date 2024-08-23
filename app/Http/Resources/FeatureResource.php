@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ArtikelResource extends JsonResource
+class FeatureResource extends JsonResource
 {
     public $status;
     public $message;
@@ -24,7 +24,7 @@ class ArtikelResource extends JsonResource
         return [
             'status' => $this->status,
             'message' => $this->message,
-            'data' => $this->resource,
+            'data' => $this->resource
         ];
     }
 }

@@ -7,21 +7,18 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AboutResource extends JsonResource
 {
-    protected $status;
-    protected $message;
+    public $status;
+    public $message;
+    public $resource;
 
-    public function __construct($status, $message, $resource = null)
+    public function __construct($status, $message, $resource)
     {
         parent::__construct($resource);
         $this->status = $status;
         $this->message = $message;
+        $this->resource = $resource;
     }
 
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
@@ -31,4 +28,3 @@ class AboutResource extends JsonResource
         ];
     }
 }
-

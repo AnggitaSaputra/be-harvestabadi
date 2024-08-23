@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryResource extends JsonResource
@@ -15,14 +16,15 @@ class CategoryResource extends JsonResource
         parent::__construct($resource);
         $this->status = $status;
         $this->message = $message;
+        $this->resource = $resource;
     }
 
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         return [
-            'success' => $this->status,
+            'status' => $this->status,
             'message' => $this->message,
-            'data' => $this->resource,
+            'data' => $this->resource
         ];
     }
 }

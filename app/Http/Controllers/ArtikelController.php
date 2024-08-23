@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Artikel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ArtikelResource; 
+use App\Http\Resources\ArtikelResource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ArtikelController extends Controller
@@ -27,17 +28,16 @@ class ArtikelController extends Controller
             'category' => 'required|integer|exists:categories,id',
         ]);
 
-        $image = $request->file('image');
-        $image->storeAs('public/images', $image->hashName());
-
-
         if ($validator->fails()) {
             return new ArtikelResource(false, 'Validation Error', $validator->errors());
         }
 
+        $image = $request->file('image');
+        $imagePath = Storage::putFileAs('public/images', $image, $image->hashName());
+
         $artikel = Artikel::create([
             'title' => $request->title,
-            'image' => $image->hashName(),
+            'image' => basename($imagePath),
             'author' => $request->author,
             'slug' => $request->slug,
             'content' => $request->content,
@@ -50,7 +50,7 @@ class ArtikelController extends Controller
     public function show($id)
     {
         $artikel = Artikel::find($id);
-        
+
         if (!$artikel) {
             return new ArtikelResource(false, 'Artikel not found!', null);
         }
@@ -61,12 +61,12 @@ class ArtikelController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'author' => 'required|integer',
-            'slug' => 'required|string',
-            'content' => 'required|string',
-            'category' => 'required|integer|exists:categories,id',
+            'title' => 'string|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'author' => 'integer',
+            'slug' => 'string',
+            'content' => 'string',
+            'category' => 'integer|exists:categories,id',
         ]);
 
         if ($validator->fails()) {
@@ -106,7 +106,7 @@ class ArtikelController extends Controller
     public function getArtikelBySlug($slug)
     {
         $artikel = Artikel::where('slug', $slug)->first();
-        
+
         if (!$artikel) {
             return new ArtikelResource(false, 'Artikel not found!', null);
         }
@@ -131,5 +131,4 @@ class ArtikelController extends Controller
         $artikels = Artikel::whereYear('created_at', $year)->get();
         return new ArtikelResource(true, 'List Data Artikels by Year', $artikels);
     }
-
 }
