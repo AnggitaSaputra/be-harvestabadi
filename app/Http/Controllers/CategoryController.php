@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        return new CategoryResource(true, 'List Data Categories', $categories);
+        return new CategoryResource('success', 'List Data Categories', $categories);
     }
 
     public function store(Request $request)
@@ -24,7 +24,7 @@ class CategoryController extends Controller
 
         $category = Category::create($request->all());
 
-        return new CategoryResource(true, 'Data Kategori Berhasil Ditambahkan!', $category);
+        return new CategoryResource('success', 'Data Kategori Berhasil Ditambahkan!', $category);
     }
 
     public function show($id)
@@ -32,10 +32,10 @@ class CategoryController extends Controller
         $category = Category::find($id);
 
         if (!$category) {
-            return new CategoryResource(false, 'Kategori tidak ditemukan!', null);
+            return new CategoryResource('error', 'Kategori tidak ditemukan!', null);
         }
 
-        return new CategoryResource(true, 'Detail Data Kategori!', $category);
+        return new CategoryResource('success', 'Detail Data Kategori!', $category);
     }
 
     public function update(Request $request, $id)
@@ -45,18 +45,18 @@ class CategoryController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new CategoryResource(false, 'Validation Error', $validator->errors());
+            return new CategoryResource('error', 'Validation Error', $validator->errors());
         }
 
         $category = Category::find($id);
 
         if (!$category) {
-            return new CategoryResource(false, 'Kategori tidak ditemukan!', null);
+            return new CategoryResource('error', 'Kategori tidak ditemukan!', null);
         }
 
         $category->update($request->all());
 
-        return new CategoryResource(true, 'Data Kategori Berhasil Diubah!', $category);
+        return new CategoryResource('success', 'Data Kategori Berhasil Diubah!', $category);
     }
 
     public function destroy($id)
@@ -64,11 +64,11 @@ class CategoryController extends Controller
         $category = Category::find($id);
 
         if (!$category) {
-            return new CategoryResource(false, 'Kategori tidak ditemukan!', null);
+            return new CategoryResource('error', 'Kategori tidak ditemukan!', null);
         }
 
         $category->delete();
 
-        return new CategoryResource(true, 'Data Kategori Berhasil Dihapus!', null);
+        return new CategoryResource('success', 'Data Kategori Berhasil Dihapus!', null);
     }
 }

@@ -13,7 +13,7 @@ class FeatureController extends Controller
     public function index()
     {
         $features = Feature::all();
-        return new FeatureResource(true, 'List Data Features', $features);
+        return new FeatureResource('success', 'List Data Features', $features);
     }
 
     public function store(Request $request)
@@ -26,7 +26,7 @@ class FeatureController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new FeatureResource(false, 'Validation Error', $validator->errors());
+            return new FeatureResource('error', 'Validation Error', $validator->errors());
         }
 
         $image = $request->file('image');
@@ -39,7 +39,7 @@ class FeatureController extends Controller
             'content' => $request->content,
         ]);
 
-        return new FeatureResource(true, 'Data Feature Berhasil Ditambahkan!', $feature);
+        return new FeatureResource('success', 'Data Feature Berhasil Ditambahkan!', $feature);
     }
 
     public function show($id)
@@ -47,10 +47,10 @@ class FeatureController extends Controller
         $feature = Feature::find($id);
 
         if (!$feature) {
-            return new FeatureResource(false, 'Feature not found!', null);
+            return new FeatureResource('error', 'Feature not found!', null);
         }
 
-        return new FeatureResource(true, 'Detail Data Feature!', $feature);
+        return new FeatureResource('success', 'Detail Data Feature!', $feature);
     }
 
     public function update(Request $request, $id)
@@ -63,13 +63,13 @@ class FeatureController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new FeatureResource(false, 'Validation Error', $validator->errors());
+            return new FeatureResource('error', 'Validation Error', $validator->errors());
         }
 
         $feature = Feature::find($id);
 
         if (!$feature) {
-            return new FeatureResource(false, 'Feature not found!', null);
+            return new FeatureResource('error', 'Feature not found!', null);
         }
 
         if ($request->hasFile('image')) {
@@ -84,7 +84,7 @@ class FeatureController extends Controller
         $feature->update($request->except('image'));
         $feature->save();
 
-        return new FeatureResource(true, 'Data Feature Berhasil Diubah!', $feature);
+        return new FeatureResource('success', 'Data Feature Berhasil Diubah!', $feature);
     }
 
     public function destroy($id)
@@ -92,18 +92,18 @@ class FeatureController extends Controller
         $feature = Feature::find($id);
 
         if (!$feature) {
-            return new FeatureResource(false, 'Feature not found!', null);
+            return new FeatureResource('error', 'Feature not found!', null);
         }
 
         $feature->delete();
 
-        return new FeatureResource(true, 'Data Feature Berhasil Dihapus!', null);
+        return new FeatureResource('success', 'Data Feature Berhasil Dihapus!', null);
     }
 
     public function getAllFeature()
     {
         $features = Feature::all();
-        return new FeatureResource(true, 'List Data Features', $features);
+        return new FeatureResource('success', 'List Data Features', $features);
     }
 
     public function getFeatureBySlug($slug)
@@ -111,9 +111,9 @@ class FeatureController extends Controller
         $feature = Feature::where('slug', $slug)->first();
 
         if (!$feature) {
-            return new FeatureResource(false, 'Feature not found!', null);
+            return new FeatureResource('error', 'Feature not found!', null);
         }
 
-        return new FeatureResource(true, 'Detail Data Feature!', $feature);
+        return new FeatureResource('success', 'Detail Data Feature!', $feature);
     }
 }

@@ -12,28 +12,28 @@ class AboutController extends Controller
     public function edit()
     {
         $about = About::first();
-        return new AboutResource(true, 'About Us data retrieved successfully.', $about);
+        return new AboutResource('success', 'About Us data retrieved successfully.', $about);
     }
 
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'deskripsi' => 'string',
+            'content' => 'string',
         ]);
 
         if ($validator->fails()) {
-            return new AboutResource(false, 'Validation Error', $validator->errors());
+            return new AboutResource('error', 'Validation Error', $validator->errors());
         }
 
         $about = About::first();
-        $about->content = $request->input('deskripsi');
+
 
         if (!$about) {
-            return new AboutResource(false, 'About Us not found!', null);
+            return new AboutResource('error', 'About Us not found!', null);
         }
 
-        $about->save();
+        $about->update($request->all());
 
-        return new AboutResource(true, 'Data About Us Berhasil Diubah!', $about);
+        return new AboutResource('success', 'Data About Us Berhasil Diubah!', $about);
     }
 }

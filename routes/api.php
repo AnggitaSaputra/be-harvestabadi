@@ -8,6 +8,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProfileController;
 
 
 Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(function () {
@@ -17,8 +18,16 @@ Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(functio
     Route::apiResource('features', FeatureController::class);
     Route::apiResource('designs', DesignController::class);
 
-    Route::get('/about', [AboutController::class, 'edit']);
-    Route::put('/about', [AboutController::class, 'update']);
+    Route::prefix('/about')->controller(AboutController::class)->group(function () {
+        Route::get('/', 'edit');
+        Route::put('/', 'update');
+    });
+
+    Route::prefix('/profile')->controller(ProfileController::class)->group(function () {
+        Route::get('/{email}', 'profile');
+        Route::post('/{email}/update', 'updateProfile');
+        Route::post('/{email}/update/password', 'updatePassword');
+    });
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });

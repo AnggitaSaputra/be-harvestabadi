@@ -14,7 +14,7 @@ class ArtikelController extends Controller
     public function index()
     {
         $artikels = Artikel::all();
-        return new ArtikelResource(true, 'List Data Artikels', $artikels);
+        return new ArtikelResource('success', 'List Data Artikels', $artikels);
     }
 
     public function store(Request $request)
@@ -29,7 +29,7 @@ class ArtikelController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new ArtikelResource(false, 'Validation Error', $validator->errors());
+            return new ArtikelResource('error', 'Validation Error', $validator->errors());
         }
 
         $image = $request->file('image');
@@ -44,7 +44,7 @@ class ArtikelController extends Controller
             'category' => $request->category,
         ]);
 
-        return new ArtikelResource(true, 'Data Artikel Berhasil Ditambahkan!', $artikel);
+        return new ArtikelResource('success', 'Data Artikel Berhasil Ditambahkan!', $artikel);
     }
 
     public function show($id)
@@ -52,10 +52,10 @@ class ArtikelController extends Controller
         $artikel = Artikel::find($id);
 
         if (!$artikel) {
-            return new ArtikelResource(false, 'Artikel not found!', null);
+            return new ArtikelResource('error', 'Artikel not found!', null);
         }
 
-        return new ArtikelResource(true, 'Detail Data Artikel!', $artikel);
+        return new ArtikelResource('success', 'Detail Data Artikel!', $artikel);
     }
 
     public function update(Request $request, $id)
@@ -70,18 +70,18 @@ class ArtikelController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new ArtikelResource(false, 'Validation Error', $validator->errors());
+            return new ArtikelResource('error', 'Validation Error', $validator->errors());
         }
 
         $artikel = Artikel::find($id);
 
         if (!$artikel) {
-            return new ArtikelResource(false, 'Artikel not found!', null);
+            return new ArtikelResource('error', 'Artikel not found!', null);
         }
 
         $artikel->update($request->all());
 
-        return new ArtikelResource(true, 'Data Artikel Berhasil Diubah!', $artikel);
+        return new ArtikelResource('success', 'Data Artikel Berhasil Diubah!', $artikel);
     }
 
     public function destroy($id)
@@ -89,18 +89,18 @@ class ArtikelController extends Controller
         $artikel = Artikel::find($id);
 
         if (!$artikel) {
-            return new ArtikelResource(false, 'Artikel not found!', null);
+            return new ArtikelResource('error', 'Artikel not found!', null);
         }
 
         $artikel->delete();
 
-        return new ArtikelResource(true, 'Data Artikel Berhasil Dihapus!', null);
+        return new ArtikelResource('success', 'Data Artikel Berhasil Dihapus!', null);
     }
 
     public function getAllArtikel()
     {
         $artikels = Artikel::all();
-        return new ArtikelResource(true, 'List Data Artikels', $artikels);
+        return new ArtikelResource('success', 'List Data Artikels', $artikels);
     }
 
     public function getArtikelBySlug($slug)
@@ -108,27 +108,27 @@ class ArtikelController extends Controller
         $artikel = Artikel::where('slug', $slug)->first();
 
         if (!$artikel) {
-            return new ArtikelResource(false, 'Artikel not found!', null);
+            return new ArtikelResource('error', 'Artikel not found!', null);
         }
 
-        return new ArtikelResource(true, 'Detail Data Artikel!', $artikel);
+        return new ArtikelResource('success', 'Detail Data Artikel!', $artikel);
     }
 
     public function getArtikelByCategory($category)
     {
         $artikels = Artikel::where('category', $category)->get();
-        return new ArtikelResource(true, 'List Data Artikels by Category', $artikels);
+        return new ArtikelResource('success', 'List Data Artikels by Category', $artikels);
     }
 
     public function getArtikelByQuery($query)
     {
         $artikels = Artikel::where('title', 'LIKE', "%{$query}%")->get();
-        return new ArtikelResource(true, 'List Data Artikels by Query', $artikels);
+        return new ArtikelResource('success', 'List Data Artikels by Query', $artikels);
     }
 
     public function getArtikelByYear($year)
     {
         $artikels = Artikel::whereYear('created_at', $year)->get();
-        return new ArtikelResource(true, 'List Data Artikels by Year', $artikels);
+        return new ArtikelResource('success', 'List Data Artikels by Year', $artikels);
     }
 }

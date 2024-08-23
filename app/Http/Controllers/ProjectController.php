@@ -13,7 +13,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::all();
-        return new ProjectResource(true, 'List Data Projects', $projects);
+        return new ProjectResource('success', 'List Data Projects', $projects);
     }
 
     public function store(Request $request)
@@ -26,7 +26,7 @@ class ProjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new ProjectResource(false, 'Validation Error', $validator->errors());
+            return new ProjectResource('error', 'Validation Error', $validator->errors());
         }
 
         $image = $request->file('image');
@@ -39,7 +39,7 @@ class ProjectController extends Controller
             'content' => $request->content,
         ]);
 
-        return new ProjectResource(true, 'Data Project Berhasil Ditambahkan!', $project);
+        return new ProjectResource('success', 'Data Project Berhasil Ditambahkan!', $project);
     }
 
     public function show($id)
@@ -47,10 +47,10 @@ class ProjectController extends Controller
         $project = Project::find($id);
 
         if (!$project) {
-            return new ProjectResource(false, 'Project not found!', null);
+            return new ProjectResource('error', 'Project not found!', null);
         }
 
-        return new ProjectResource(true, 'Detail Data Project!', $project);
+        return new ProjectResource('success', 'Detail Data Project!', $project);
     }
 
     public function update(Request $request, $id)
@@ -63,13 +63,13 @@ class ProjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new ProjectResource(false, 'Validation Error', $validator->errors());
+            return new ProjectResource('error', 'Validation Error', $validator->errors());
         }
 
         $project = Project::find($id);
 
         if (!$project) {
-            return new ProjectResource(false, 'Project not found!', null);
+            return new ProjectResource('error', 'Project not found!', null);
         }
 
         if ($request->hasFile('image')) {
@@ -83,7 +83,7 @@ class ProjectController extends Controller
 
         $project->update($request->except('image'));
 
-        return new ProjectResource(true, 'Data Project Berhasil Diubah!', $project);
+        return new ProjectResource('success', 'Data Project Berhasil Diubah!', $project);
     }
 
     public function destroy($id)
@@ -91,18 +91,18 @@ class ProjectController extends Controller
         $project = Project::find($id);
 
         if (!$project) {
-            return new ProjectResource(false, 'Project not found!', null);
+            return new ProjectResource('error', 'Project not found!', null);
         }
 
         $project->delete();
 
-        return new ProjectResource(true, 'Data Project Berhasil Dihapus!', null);
+        return new ProjectResource('success', 'Data Project Berhasil Dihapus!', null);
     }
 
     public function getAllProject()
     {
         $projects = Project::all();
-        return new ProjectResource(true, 'List Data Projects', $projects);
+        return new ProjectResource('success', 'List Data Projects', $projects);
     }
 
     public function getProjectBySlug($slug)
@@ -110,9 +110,9 @@ class ProjectController extends Controller
         $project = Project::where('slug', $slug)->first();
 
         if (!$project) {
-            return new ProjectResource(false, 'Project not found!', null);
+            return new ProjectResource('error', 'Project not found!', null);
         }
 
-        return new ProjectResource(true, 'Detail Data Project!', $project);
+        return new ProjectResource('success', 'Detail Data Project!', $project);
     }
 }
