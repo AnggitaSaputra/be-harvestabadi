@@ -13,7 +13,7 @@ class ArtikelController extends Controller
 {
     public function index()
     {
-        $artikels = Artikel::all();
+        $artikels = Artikel::with('author', 'category')->get();
         return new ArtikelResource('success', 'List Data Artikels', $artikels);
     }
 
@@ -49,7 +49,7 @@ class ArtikelController extends Controller
 
     public function show($id)
     {
-        $artikel = Artikel::find($id);
+        $artikel = Artikel::with('author', 'category')->find($id);
 
         if (!$artikel) {
             return new ArtikelResource('error', 'Artikel not found!', null);
@@ -73,7 +73,7 @@ class ArtikelController extends Controller
             return new ArtikelResource('error', 'Validation Error', $validator->errors());
         }
 
-        $artikel = Artikel::find($id);
+        $artikel = Artikel::with('author', 'category')->find($id);
 
         if (!$artikel) {
             return new ArtikelResource('error', 'Artikel not found!', null);
@@ -99,13 +99,13 @@ class ArtikelController extends Controller
 
     public function getAllArtikel()
     {
-        $artikels = Artikel::all();
+        $artikels = Artikel::with('author', 'category')->get();
         return new ArtikelResource('success', 'List Data Artikels', $artikels);
     }
 
     public function getArtikelBySlug($slug)
     {
-        $artikel = Artikel::where('slug', $slug)->first();
+        $artikel = Artikel::with('author', 'category')->where('slug', $slug)->first();
 
         if (!$artikel) {
             return new ArtikelResource('error', 'Artikel not found!', null);
