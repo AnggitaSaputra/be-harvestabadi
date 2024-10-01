@@ -62,7 +62,7 @@ class ArtikelController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'author' => 'integer',
             'slug' => 'string',
             'content' => 'string',
@@ -79,9 +79,19 @@ class ArtikelController extends Controller
             return new ArtikelResource('error', 'Artikel not found!', null);
         }
 
-        $artikel->update($request->all());
+        if ($request->hasFile('image')) {
+            if ($artikel->image) {
+                Storage::delete($artikel->image);
+            }
 
-        return new ArtikelResource('success', 'Data Artikel Berhasil Diubah!', $artikel);
+            $imagePath = $request->file('image')->store('images', 'public');
+            $artikel->image = $imagePath;
+        }
+
+        $artikel->fill($request->except('image'));
+        $artikel->save();
+
+        return new ArtikelResource('success', 'Data Artikel Berhasil Diubah!', $request->all());
     }
 
     public function destroy($id)

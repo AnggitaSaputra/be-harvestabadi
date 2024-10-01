@@ -25,8 +25,8 @@ Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(functio
 
     Route::prefix('/profile')->controller(ProfileController::class)->group(function () {
         Route::get('/{email}', 'profile');
-        Route::post('/{email}/update', 'updateProfile');
-        Route::post('/{email}/update/password', 'updatePassword');
+        Route::put('/{email}/update', 'updateProfile');
+        Route::put('/{email}/update/password', 'updatePassword');
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

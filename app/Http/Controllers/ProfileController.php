@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\ProfileResource;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class ProfileController extends Controller
 {
@@ -45,7 +46,7 @@ class ProfileController extends Controller
 
         $validator = Validator::make($request->all(), [
             'current_password' => 'string',
-            'new_password' => 'string|min:8|confirmed',
+            'new_password' => 'string|min:8',
         ]);
 
         if ($validator->fails()) {

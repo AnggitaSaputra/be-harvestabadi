@@ -24,12 +24,10 @@ class CustomAuthenticate
             $tokenInstance = PersonalAccessToken::findToken($token);
 
             if ($tokenInstance) {
-                // Jika token valid, lanjutkan ke request berikutnya
                 return $next($request);
             }
         }
 
-        // Jika token tidak valid atau tidak ada, kembalikan respon unauthorized
         return response()->json(['status' => false, 'message' => 'Unauthorized'], 401);
     }
 }
