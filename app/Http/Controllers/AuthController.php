@@ -11,19 +11,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function user(Request $request)
-    {
-        $authHeader = $request->header('Authorization');
-        $token = str_replace('Bearer ', '', $authHeader);
-        $tokenInstance = PersonalAccessToken::findToken($token);
-
-        if ($tokenInstance) {
-            return new AuthResource('success', 'User authenticated', $tokenInstance->tokenable); // Mengembalikan user yang terhubung dengan token
-        } else {
-            return new AuthResource('error', 'Invalid token', null);
-        }
-    }
-
     public function login(Request $request)
     {
         $request->validate([
@@ -46,13 +33,11 @@ class AuthController extends Controller
         return new AuthResource('error', 'Invalid credentials.', null);
     }
 
-
-    // Method untuk logout
     public function logout(Request $request)
     {
         $authHeader = $request->header('Authorization');
         $token = str_replace('Bearer ', '', $authHeader);
-        $tokenInstance = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+        $tokenInstance = PersonalAccessToken::findToken($token);
 
         if ($tokenInstance) {
             $tokenInstance->delete();
@@ -66,7 +51,7 @@ class AuthController extends Controller
     {
         $authHeader = $request->header('Authorization');
         $token = str_replace('Bearer ', '', $authHeader);
-        $tokenInstance = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+        $tokenInstance = PersonalAccessToken::findToken($token);
 
         if ($tokenInstance) {
             return new AuthResource('success', 'User authenticated', $tokenInstance->tokenable);
@@ -74,5 +59,4 @@ class AuthController extends Controller
 
         return new AuthResource('error', 'Invalid token', null);
     }
-
 }
