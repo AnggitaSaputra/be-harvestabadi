@@ -9,7 +9,7 @@ use App\Http\Controllers\DesignController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\SettingsController;
 
 Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(function () {
     Route::apiResource('artikels', ArtikelController::class);
@@ -27,6 +27,11 @@ Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(functio
         Route::get('/{email}', 'profile');
         Route::put('/{email}/update', 'updateProfile');
         Route::put('/{email}/update/password', 'updatePassword');
+    });
+
+    Route::prefix('/setting')->controller(SettingsController::class)->group(function () {
+        Route::get('/whatsapp-number', 'getWhatsAppNumber');
+        Route::post('/whatsapp-number', 'saveWhatsAppNumber');
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -53,6 +58,10 @@ Route::prefix('v1')->group(function () {
 
     Route::prefix('public/designs')->controller(DesignController::class)->group(function () {
         Route::get('/all', 'getAllDesign');
+    });
+
+    Route::prefix('setting')->controller(SettingsController::class)->group(function () {
+        Route::get('/whatsapp-number', 'getWhatsAppNumber');
     });
 
     Route::prefix('auth')->controller(AuthController::class)->group(function () {
