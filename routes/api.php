@@ -6,7 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\DesignController;
-use App\Http\Controllers\FeatureController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -15,7 +15,7 @@ Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(functio
     Route::apiResource('artikels', ArtikelController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('projects', ProjectController::class);
-    Route::apiResource('features', FeatureController::class);
+    Route::apiResource('services', ServiceController::class);
     Route::apiResource('designs', DesignController::class);
 
     Route::prefix('/about')->controller(AboutController::class)->group(function () {
@@ -51,9 +51,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/{slug}', 'getProjectBySlug');
     });
 
-    Route::prefix('public/features')->controller(FeatureController::class)->group(function () {
-        Route::get('/all', 'getAllFeature');
-        Route::get('/{slug}', 'getFeatureBySlug');
+    Route::prefix('public/services')->controller(ServiceController::class)->group(function () {
+        Route::get('/all', 'getAllService');
+        Route::get('/{slug}', 'getServiceBySlug');
     });
 
     Route::prefix('public/designs')->controller(DesignController::class)->group(function () {
