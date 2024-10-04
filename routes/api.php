@@ -32,6 +32,8 @@ Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(functio
     Route::prefix('/setting')->controller(SettingsController::class)->group(function () {
         Route::get('/whatsapp-number', 'getWhatsAppNumber');
         Route::post('/whatsapp-number', 'saveWhatsAppNumber');
+        Route::get('/featured-image', 'getFeaturedImage');
+        Route::post('/featured-image', 'saveFeaturedImage');
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -62,6 +64,7 @@ Route::prefix('v1')->group(function () {
 
     Route::prefix('setting')->controller(SettingsController::class)->group(function () {
         Route::get('/whatsapp-number', 'getWhatsAppNumber');
+        Route::get('/featured-image', 'getFeaturedImage');
     });
 
     Route::prefix('auth')->controller(AuthController::class)->group(function () {

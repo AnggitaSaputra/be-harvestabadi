@@ -20,4 +20,14 @@ class Setting extends Model
     {
         return self::updateOrCreate(['key' => 'whatsAppNumber'], ['value' => $number]);
     }
+
+    public static function getFeaturedImage()
+    {
+        return self::where('key', 'featured_image')->first()->value ?? null;
+    }
+
+    public static function saveFeaturedImage($imagePath)
+    {
+        return self::updateOrCreate(['key' => 'featured_image'], ['value' => $imagePath]);
+    }
 }
