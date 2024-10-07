@@ -22,7 +22,7 @@ class ProjectController extends Controller
             'link' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'slug' => 'required|string',
-            'content' => 'required|string',
+            'title' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -36,7 +36,7 @@ class ProjectController extends Controller
             'link' => $request->link,
             'image' => basename($imagePath),
             'slug' => $request->slug,
-            'content' => $request->content,
+            'title' => $request->title,
         ]);
 
         return new ProjectResource('success', 'Data Project Berhasil Ditambahkan!', $project);
@@ -59,7 +59,7 @@ class ProjectController extends Controller
             'link' => 'string',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'slug' => 'string',
-            'content' => 'string',
+            'title' => 'string',
         ]);
 
         if ($validator->fails()) {
