@@ -10,6 +10,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserController;
 
 Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(function () {
     Route::apiResource('artikels', ArtikelController::class);
@@ -17,6 +18,7 @@ Route::middleware(['customAuthenticate'])->prefix('v1/dashboard')->group(functio
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('services', ServiceController::class);
     Route::apiResource('designs', DesignController::class);
+    Route::apiResource('users', UserController::class);
 
     Route::prefix('/about')->controller(AboutController::class)->group(function () {
         Route::get('/', 'edit');

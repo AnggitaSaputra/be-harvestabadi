@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function artikels()
+    {
+        return $this->hasMany(Artikel::class, 'author')->onDelete('cascade');
+    }
 }
