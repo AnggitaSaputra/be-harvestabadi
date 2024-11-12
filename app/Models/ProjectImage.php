@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model
+class ProjectImage extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function images()
+    public function project()
     {
-        return $this->hasMany(ProjectImage::class);
+        return $this->belongsTo(Project::class);
     }
 }
