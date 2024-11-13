@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Http\Resources\ServiceResource;
+use App\Models\ServiceImage;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,28 +24,41 @@ class ServiceController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'slug' => 'required|string',
             'content' => 'required|string',
+            'slide*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
             return new ServiceResource('error', 'Validation Error', $validator->errors());
         }
 
-        $image = $request->file('image');
-        $imagePath = Storage::putFileAs('public/images', $image, $image->hashName());
+        $imagePath = $request->file('image')->store('public/images');
+        $imageName = basename($imagePath);
 
         $service = Service::create([
             'title' => $request->title,
-            'image' => basename($imagePath),
+            'image' => $imageName,
             'slug' => $request->slug,
             'content' => $request->content,
         ]);
+
+        if ($request->hasFile('slide')) {
+            foreach ($request->file('slide') as $slideFile) {
+                $slidePath = $slideFile->store('public/images');
+                $slideName = basename($slidePath);
+
+                ServiceImage::create([
+                    'service_id' => $service->id,
+                    'image' => $slideName,
+                ]);
+            }
+        }
 
         return new ServiceResource('success', 'Data Service Berhasil Ditambahkan!', $service);
     }
 
     public function show($id)
     {
-        $service = Service::find($id);
+        $service = Service::with('images')->find($id);
 
         if (!$service) {
             return new ServiceResource('error', 'Service not found!', null);
@@ -60,16 +74,25 @@ class ServiceController extends Controller
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'slug' => 'string',
             'content' => 'string',
+            'additional_images.*.id' => 'nullable|exists:service_images,id',  // Make id nullable
+            'additional_images.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Make image nullable
         ]);
 
         if ($validator->fails()) {
-            return new ServiceResource('error', 'Validation Error', $validator->errors());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
         }
 
         $service = Service::find($id);
 
         if (!$service) {
-            return new ServiceResource('error', 'Service not found!', null);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Service not found',
+            ], 404);
         }
 
         if ($request->hasFile('image')) {
@@ -81,10 +104,49 @@ class ServiceController extends Controller
             $service->image = $image->hashName();
         }
 
-        $service->update($request->except('image'));
         $service->save();
+        if ($request->has('additional_images')) {
+            foreach ($request->additional_images as $slideImageData) {
+                // If id is provided and valid
+                if (isset($slideImageData['id']) && $slideImageData['id']) {
+                    $existingImage = ServiceImage::find($slideImageData['id']);
 
-        return new ServiceResource('success', 'Data Service Berhasil Diubah!', $service);
+                    if ($existingImage) {
+                        // If a new file is provided, delete the old image and store the new one
+                        if (isset($slideImageData['image']) && $slideImageData['image']) {
+                            Storage::delete('public/images/' . $existingImage->image);
+
+                            $slideImage = $slideImageData['image'];
+                            $slideImageName = $slideImage->hashName();
+                            $slideImage->storeAs('public/images', $slideImageName);
+
+                            // Update the image in the service_images table
+                            $existingImage->update([
+                                'image' => $slideImageName,
+                            ]);
+                        }
+                    }
+                } else {
+                    // If the image ID is not provided, you may choose to create a new image
+                    if (isset($slideImageData['image'])) {
+                        $slideImage = $slideImageData['image'];
+                        $slideImageName = $slideImage->hashName();
+                        $slideImage->storeAs('public/images', $slideImageName);
+
+                        // Add the new image to the service_images table
+                        $service->images()->create([
+                            'image' => $slideImageName,
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Service updated successfully',
+            'data' => $service->load('images'), // Load related images
+        ]);
     }
 
     public function destroy($id)

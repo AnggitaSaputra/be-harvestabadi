@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Service extends Model
+class ServiceImage extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function images()
+    public function service()
     {
-        return $this->hasMany(ServiceImage::class);
+        return $this->belongsTo(Service::class);
     }
 }

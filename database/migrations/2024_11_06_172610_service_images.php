@@ -13,9 +13,14 @@ return new class extends Migration
     {
         Schema::create('service_images', function (Blueprint $table) {
             $table->id();
-            $table->string('service_id');
+            $table->unsignedBigInteger('service_id');
             $table->string('image');
             $table->timestamps();
+
+            $table->foreign('service_id')
+                  ->references('id')
+                  ->on('services')
+                  ->onDelete('cascade');
         });
     }
 
