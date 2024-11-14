@@ -183,7 +183,7 @@ class ProjectController extends Controller
 
     public function getProjectBySlug($slug)
     {
-        $project = Project::where('slug', $slug)->first();
+        $project = Project::with('images')->where('slug', $slug)->first();
 
         if (!$project) {
             return new ProjectResource('error', 'Project not found!', null);
